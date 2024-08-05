@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
 import uuid
 
 class Artwork(models.Model):
@@ -38,3 +40,27 @@ class Folder(models.Model):
 
     def __str__(self):
         return self.name
+    
+class User(AbstractUser):
+    username_validator = UnicodeUsernameValidator()
+
+    first_name = models.CharField(max_length=50)
+    last_name = models.CharField(max_length=50)
+    date_joined = None
+    groups = None
+    id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=150, unique = False, validators=[username_validator])
+    email = models.EmailField(max_length=254, unique=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    USERNAME_FIELD = "id"
+    REQUIRED_FIELDS = ["email", "username"]
+
+    class Meta:
+        ordering = ["updated_at"]
+        db_table = "user"
+
+    def __str__(self):
+        return self.username
+

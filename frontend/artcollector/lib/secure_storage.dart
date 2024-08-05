@@ -6,8 +6,8 @@ class SecureStorage {
 
   // Write values
   Future<void> writeCredentials(String username, String password) async {
-    await _storage.write(key: 'username', value: 'admin');
-    await _storage.write(key: 'password', value: 'Sunny20031022');
+    await _storage.write(key: 'username', value: username);
+    await _storage.write(key: 'password', value: password);
   }
 
   // Read values
