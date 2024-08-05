@@ -1,9 +1,12 @@
 # ArtCollector
 
 1. front-end
+
+'''
 flutter clean
 flutter pub get
 flutter run
+'''
 
 progress: 
 (Unsolved - 2024.8.6) upload selected image to Azure Storage Account
@@ -11,7 +14,8 @@ progress:
 (2024.7.20) login page (unstyled)
 
 2. back-end
-python3 manage.py runserver
+
+'''python3 manage.py runserver'''
 
 progress:
 (2024.8.4) built Azure AI client, customized Azure Document Intelligence ready-to-go
