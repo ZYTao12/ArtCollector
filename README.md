@@ -32,7 +32,6 @@ progress:
 
 
 # TO-DO
-- Solve Flutter -> Azure Storage uploading issue
 - Editable form page to load extracted text
 - relational database: (user) -> artwork -> folder
 - User model, user auth, etc. 
