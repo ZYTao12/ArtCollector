@@ -17,6 +17,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  azblob:
+    dependency: "direct main"
+    description:
+      name: azblob
+      sha256: e9e8689280bd8fa19c1c21a476547de80d2a770c81d2da9da68173c7f5479c7b
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   boolean_selector:
     dependency: transitive
     description:

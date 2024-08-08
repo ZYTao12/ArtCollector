@@ -1,6 +1,8 @@
 import 'package:artcollector/pages/initpage.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:artcollector/pages/resultpage.dart';
+
 
 Future<void> main() async {
   // Load environment variables from .env file
