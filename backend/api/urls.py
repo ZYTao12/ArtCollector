@@ -3,6 +3,7 @@ from . import views
 
 app_name = 'api'
 urlpatterns = [
-    path('artworks/', views.ArtworkAPIView.as_view()),
-    path('artworks/<pk>/change/', views.ArtworkAPIView.as_view()),
+    path('artwork/', views.ArtworkAPIView.as_view()),
+    path('artwork/<uuid:pk>/change/', views.ArtworkChangeAPIView.as_view()),
+    path('artwork/<uuid:pk>/process/', views.AzureAPIView.as_view()),
 ]

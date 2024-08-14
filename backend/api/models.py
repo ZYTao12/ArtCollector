@@ -7,19 +7,25 @@ class Artwork(models.Model):
 
     # A UUID field that automatically generates a unique identifier on creation
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    # Text fields for various string inputs with specified characteristics
-    info = models.TextField() # path to the pic to be processed by ocr
-    description = models.TextField() # ocr processed text
-    name = models.CharField(max_length=200)
-    author = models.CharField(max_length=200)
-    folder = models.UUIDField(default=uuid.uuid4, editable=False)  # folder as UUID
-    date_of_creation = models.CharField(max_length=50)
-    medium = models.CharField(max_length=100)
-    dimensions = models.CharField(max_length=100)
-    style = models.CharField(max_length=100)
-    exhibition = models.CharField(max_length=200)
-    memo = models.TextField()
-    picture = models.TextField()  # path to another pic saved on AWS S3
+
+    label_path = models.CharField(max_length=500, null=True)
+
+    folder = models.CharField(max_length=10, null=True)  # folder as UUID
+
+    name = models.CharField(max_length=200, null=True)
+    date_of_creation = models.CharField(max_length=50, null=True)
+    medium = models.CharField(max_length=100, null=True)
+    description = models.TextField(null=True) # ocr processed text
+    author = models.CharField(max_length=200, null=True)
+
+    # characteristics to be trained
+    # dimensions = models.CharField(max_length=100)
+    # style = models.CharField(max_length=100)
+    # exhibition = models.CharField(max_length=200)
+    # memo = models.TextField()
+    # picture = models.TextField()  # path to the artwork pic saved on azure storage
+    
+    # auto-genrated fields
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
 

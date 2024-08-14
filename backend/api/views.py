@@ -10,6 +10,8 @@ from rest_framework.generics import get_object_or_404
 from .serializers import ArtworkSerializer, FolderSerializer
 #from rest_framework.authentication import get_authorization_header
 #from rest_framework.permissions import BasePermission
+from api.azure_tools import labelreader, upload_to_azure
+import json
 
 """ class IsDummyAuthenticated(BasePermission):
     keyword = 'Bearer'
@@ -54,30 +56,59 @@ class ArtworkAPIView(views.APIView):
     @extend_schema(responses={200: ArtworkSerializer})
     def get(self, request, *args, **kwargs):
         filterset = ArtworkFilter(request.query_params, queryset=Artwork.objects.all())
-
-        # offset = self.request.query_params.get("offset", None)
-        # if offset:
-        #   start_idx = int(offset)
-
-        # limit = self.request.query_params.get("limit", None)
-        # if limit:
-        #   end_idx = start_idx + int(limit)
-
         serializer = ArtworkSerializer(instance=filterset.qs.all(), many=True)
         return Response(serializer.data)
     
     @extend_schema(request=ArtworkSerializer, responses={201: ArtworkSerializer})
     def post(self, request, *args, **kwargs):
+        print("POST request data:", request.data) 
         serializer = ArtworkSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status.HTTP_201_CREATED)
-
+""" 
     @extend_schema(request=ArtworkSerializer, responses={200: ArtworkSerializer})
-    def put(self, request, pk, *args, **kwargs):
-        session = get_object_or_404(Artwork, pk=pk)
+    def put(self, request, *args, **kwargs):
+        session = get_object_or_404(Artwork, pk=Artwork.id)
         serializer = ArtworkSerializer(session, data=request.data, partial=True)
         if serializer.is_valid(raise_exception=True):
             serializer.save()
             return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST) """
+
+class ArtworkChangeAPIView(views.APIView):
+    @extend_schema(request=ArtworkSerializer, responses={200: ArtworkSerializer})
+    def get(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_200_OK)
+
+
+    @extend_schema(request=ArtworkSerializer, responses={200: ArtworkSerializer})
+    def put(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        artwork = get_object_or_404(Artwork, pk=pk)
+        serializer = ArtworkSerializer(artwork, data=request.data, partial=True)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class AzureAPIView(views.APIView):
+
+    def get(self, request, pk):
+        # Get the artwork object
+        artwork = get_object_or_404(Artwork, pk=pk)
+        # Upload the image to Azure
+        container_name = "testing-data"  # You might want to store this in settings
+        blob_url = upload_to_azure.upload_artwork_label(artwork.label_path, container_name, str(artwork.id))
+
+        # Analyze the label using the blob URL
+        json_result = labelreader.analyze_label(blob_url, str(artwork.id))
+        print("json_result: ", json_result)
+
+        # Update the artwork object with the analyzed data
+        # ArtworkChangeAPIView.put(request=HttpRequest(json_result))
+
+        return Response(json_result, status=status.HTTP_200_OK)
+    
+    def put(self, request, *args, **kwargs):
+        return Response(status=status.HTTP_200_OK)
