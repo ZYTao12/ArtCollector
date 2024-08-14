@@ -10,6 +10,8 @@ flutter run
 
 progress: 
 
+(2024.8.15) added the artwork detail page that fetches the artwork data from the backend and upload user edited text to the backend
+
 (2024.8.8) added the result page (for testing purpose) to show the extracted json result
 
 (2024.8.7) upload selected image to Azure Storage Account
@@ -24,6 +26,8 @@ progress:
 
 progress:
 
+(2024.8.15) integrated the backend with Azure Storage Account and Azure Document Intelligence (OCR service)
+
 (2024.8.8) added the flask api to retrieve processed results and load them to a url
 
 (2024.8.4) built Azure AI client, customized Azure Document Intelligence ready-to-go
@@ -32,9 +36,9 @@ progress:
 
 
 # TO-DO
-- Editable form page to load extracted text
 - relational database: (user) -> artwork -> folder
 - User model, user auth, etc.
+- UI design
 
 # UI sample images (created with FlutterFlow)
 Sign-up page:
