@@ -37,6 +37,9 @@ dependencies:
   image_picker: ^0.8.6
   path: ^1.8.0
   mime: ^1.0.5
+  mime_type: ^1.0.0
+  equatable: ^2.0.5
+  dio: ^5.4.3+1
   crypto: ^3.0.1
   flutter_dotenv: ^5.1.0
   azblob: ^4.0.0
