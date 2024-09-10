@@ -1,9 +1,7 @@
 import 'dart:convert';
 import 'dart:core';
 import 'dart:io';
-import 'dart:typed_data';
 
-import 'package:collection/collection.dart';
 import 'package:http/http.dart' as http;
 import 'package:equatable/equatable.dart';
 import 'package:http_parser/http_parser.dart';

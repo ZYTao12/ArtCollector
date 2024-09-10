@@ -1,17 +1,33 @@
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import '../api_call.dart';
 import 'dart:convert';
+import 'dart:io';
+import '../api_call.dart';
 
-class ArtworkDetailPage extends StatefulWidget {
+class ResultPage extends StatefulWidget {
   final Map<String, dynamic> artwork;
-  const ArtworkDetailPage({Key? key, required this.artwork}) : super(key: key);
+  const ResultPage({Key? key, required this.artwork}) : super(key: key);
 
   @override
-  _ArtworkDetailPageState createState() => _ArtworkDetailPageState();
+  _ResultPageState createState() => _ResultPageState();
 }
 
-class _ArtworkDetailPageState extends State<ArtworkDetailPage> {
+class _ResultPageState extends State<ResultPage> {
   late Map<String, TextEditingController> controllers;
+
+  File? _image;
+  final picker = ImagePicker();
+
+  Future getImage() async {
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -49,18 +65,19 @@ class _ArtworkDetailPageState extends State<ArtworkDetailPage> {
   void _saveArtwork() async {
     // Fetch the edited content
     Map<String, dynamic> updatedArtwork = {
-      'id': widget.artwork['id'], // Assuming you have an id field
+      'id': widget.artwork['id'], 
       'name': controllers['name']!.text,
       'author': controllers['author']!.text,
       'date_of_creation': controllers['date_of_creation']!.text,
       'medium': controllers['medium']!.text,
       'description': controllers['description']!.text,
+      'picture_path': _image!.path,
     };
     try {
       // Call the UpdateArtworkCall
       final updateArtworkCall = UpdateArtworkCall();
       await updateArtworkCall.call(id: updatedArtwork['id'], jsonBody: json.encode(updatedArtwork));
-      
+      print(json.encode(updatedArtwork));
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Artwork updated successfully')),
       );
@@ -84,21 +101,29 @@ class _ArtworkDetailPageState extends State<ArtworkDetailPage> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTextField('Name', 'name'),
-            _buildTextField('Author', 'author'),
-            _buildTextField('Date of Creation', 'date_of_creation'),
-            _buildTextField('Medium', 'medium'),
-            _buildTextField('Description', 'description'),
-          ],
-        ),
+      body: Column(
+        children: [
+          _buildTextField('Name', 'name'),
+          _buildTextField('Author', 'author'),
+          _buildTextField('Date of Creation', 'date_of_creation'),
+          _buildTextField('Medium', 'medium'),
+          _buildTextField('Description', 'description'),
+          GestureDetector(
+            onTap: getImage,
+            child: Container(
+              width: 240,
+              height: 320,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                border: Border.all(color: Colors.grey),
+              ),
+              child: _image == null
+                  ? Icon(Icons.add, size: 50)
+                  : Image.file(_image!, fit: BoxFit.cover),
+            ),
+          ),
+        ],
       ),
     );
   }
-
-
 }

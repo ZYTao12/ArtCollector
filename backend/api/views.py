@@ -12,6 +12,8 @@ from .serializers import ArtworkSerializer, FolderSerializer
 #from rest_framework.permissions import BasePermission
 from api.azure_tools import labelreader, upload_to_azure
 import json
+from django.db.models import Q
+from django.db import transaction
 
 """ class IsDummyAuthenticated(BasePermission):
     keyword = 'Bearer'
@@ -81,7 +83,6 @@ class ArtworkChangeAPIView(views.APIView):
     def get(self, request, *args, **kwargs):
         return Response(status=status.HTTP_200_OK)
 
-
     @extend_schema(request=ArtworkSerializer, responses={200: ArtworkSerializer})
     def put(self, request, *args, **kwargs):
         pk = self.kwargs.get('pk')
@@ -104,11 +105,68 @@ class AzureAPIView(views.APIView):
         # Analyze the label using the blob URL
         json_result = labelreader.analyze_label(blob_url, str(artwork.id))
         print("json_result: ", json_result)
-
-        # Update the artwork object with the analyzed data
-        # ArtworkChangeAPIView.put(request=HttpRequest(json_result))
-
         return Response(json_result, status=status.HTTP_200_OK)
     
-    def put(self, request, *args, **kwargs):
-        return Response(status=status.HTTP_200_OK)
+    # def put(self, request, *args, **kwargs):
+    #     return Response(status=status.HTTP_200_OK)
+    
+class FolderAPIView(views.APIView):
+    @extend_schema(responses={200: FolderSerializer(many=True)})
+    def get(self, request, *args, **kwargs):
+        folders = Folder.objects.all()
+        serializer = FolderSerializer(folders, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @extend_schema(request=FolderSerializer, responses={200: FolderSerializer})
+    def post(self, request, *args, **kwargs):
+        serializer = FolderSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+class FolderArtworkAPIView(views.APIView):
+    @extend_schema(responses={200: ArtworkSerializer(many=True)})
+    def get(self, request, folder_id, *args, **kwargs):
+        try:
+            folder = Folder.objects.get(folderId=folder_id)
+            artworks = Artwork.objects.filter(folder=folder)
+            serializer = ArtworkSerializer(artworks, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Folder.DoesNotExist:
+            return Response({"error": "Folder not found"}, status=status.HTTP_404_NOT_FOUND)
+        
+class ArtworkDeleteAPIView(views.APIView):
+    @extend_schema(responses={200: ArtworkSerializer})
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        artwork = get_object_or_404(Artwork, pk=pk)
+        serializer = ArtworkSerializer(artwork)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    @extend_schema(responses={204: None})
+    def delete(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        artwork = get_object_or_404(Artwork, pk=pk)
+        artwork.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
+class FolderDeleteAPIView(views.APIView):
+    @extend_schema(responses={200: FolderSerializer})
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        folder = get_object_or_404(Folder, pk=pk)
+        serializer = FolderSerializer(folder)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    @extend_schema(responses={204: None})
+    def delete(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        folder = get_object_or_404(Folder, pk=pk)
+        
+        with transaction.atomic():
+            # Delete all artworks associated with this folder
+            Artwork.objects.filter(folder=folder).delete()
+            # Delete the folder
+            folder.delete()
+        
+        return Response(status=status.HTTP_204_NO_CONTENT)

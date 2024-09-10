@@ -1,9 +1,11 @@
 from .models import Artwork, Folder
+from django.utils import timezone
 from rest_framework import serializers
 
 class ArtworkSerializer(serializers.ModelSerializer):
     label_path = serializers.CharField(required=False)
-    folder = serializers.CharField(required=False)
+    picture_path = serializers.CharField(required=False)
+    folder = serializers.PrimaryKeyRelatedField(queryset=Folder.objects.all(), required=False)
     name = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date_of_creation = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     medium = serializers.CharField(required=False, allow_blank=True, allow_null=True)
@@ -28,3 +30,11 @@ class FolderSerializer(serializers.ModelSerializer):
     class Meta:
         model = Folder
         fields = "__all__"
+
+    def create(self, validated_data):
+        # Set default values for optional fields if not provided
+        if 'displayName' not in validated_data:
+            current_date = timezone.now().strftime("%Y%m%d")
+            validated_data['displayName'] = f"exhibition_{current_date}"
+        validated_data.setdefault('folderDescription', '')
+        return super().create(validated_data)
