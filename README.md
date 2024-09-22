@@ -1,8 +1,9 @@
-# ArtCollector
+# 🍸 ArtCollector
 
 1. front-end
 
 ```
+open -a Simulator
 flutter clean
 flutter pub get
 flutter run
@@ -26,19 +27,26 @@ progress:
 
 progress:
 
-(2024.8.15) integrated the backend with Azure Storage Account and Azure Document Intelligence (OCR service)
+(2024.9) Implemented folder-artworks many-to-one relational database. Implemented random generation of artworks fetched from the Art Institute of Chicago API. Adjusted front-end presentation accordingly.
 
-(2024.8.8) added the flask api to retrieve processed results and load them to a url
+(2024.8.15) Integrated the backend with Azure Storage Account and Azure Document Intelligence (OCR service).
 
-(2024.8.4) built Azure AI client, customized Azure Document Intelligence ready-to-go
+~~(2024.8.8) Added the flask api to retrieve processed results and load them to a url.~~
 
-(2024.7.20) minimum django db (artwork & folder models, admin site)
+(2024.8.4) Built Azure AI client, customized Azure Document Intelligence ready-to-go.
+
+(2024.7.20) Minimum django db (artwork & folder models, admin site).
 
 
-# TO-DO
-- relational database: (user) -> artwork -> folder
+#  📋 TO-DO (Updated on Sep 21)
 - User model, user auth, etc.
-- UI design
+- Fix features.
+- Faster rendering.
 
-# UI sample images (created with FlutterFlow)
+# 🍢 UI images
 <img src="frontend/artcollector/UI/11726976049_.pic.jpg" alt="drawing" width="200"/>
+<img src="frontend/artcollector/UI/21726976049_.pic.jpg" alt="drawing" width="200"/>
+<img src="frontend/artcollector/UI/31726976049_.pic.jpg" alt="drawing" width="200"/>
+<img src="frontend/artcollector/UI/41726976049_.pic.jpg" alt="drawing" width="200"/>
+<img src="frontend/artcollector/UI/51726976049_.pic.jpg" alt="drawing" width="200"/>
+<img src="frontend/artcollector/UI/61726976049_.pic.jpg" alt="drawing" width="200"/>
