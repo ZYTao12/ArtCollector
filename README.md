@@ -41,22 +41,4 @@ progress:
 - UI design
 
 # UI sample images (created with FlutterFlow)
-Sign-up page:
-
-![sign-up-ui](https://github.com/ZYTao12/ArtCollector/blob/main/frontend/artcollector/design/signuppage.jpeg)
-
-Sign-in page:
-![sign-in-ui](https://github.com/ZYTao12/ArtCollector/blob/main/frontend/artcollector/design/signinpage.jpeg)
-
-Homepage:
-![homepage-ui](https://github.com/ZYTao12/ArtCollector/blob/main/frontend/artcollector/design/homepage.jpeg)
-
-Search page:
-![search-page-ui](https://github.com/ZYTao12/ArtCollector/blob/main/frontend/artcollector/design/searchpage.jpeg)
-
-Upload page:
-![upload-artwork-ui](https://github.com/ZYTao12/ArtCollector/blob/main/frontend/artcollector/design/uploadartworkpage.jpeg)
-
-Folder page(s):
-![folder-a](https://github.com/ZYTao12/ArtCollector/blob/main/frontend/artcollector/design/foldercontentpage_a.jpeg)
-![folder-b](https://github.com/ZYTao12/ArtCollector/blob/main/frontend/artcollector/design/foldercontentpage_b.jpeg)
+<img src="frontend/artcollector/UI/11726976049_.pic.jpg" alt="drawing" width="200"/>
