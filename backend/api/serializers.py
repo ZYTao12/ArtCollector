@@ -4,7 +4,7 @@ from rest_framework import serializers
 
 class ArtworkSerializer(serializers.ModelSerializer):
     label_path = serializers.CharField(required=False)
-    picture_path = serializers.CharField(required=False)
+    picture_path = serializers.CharField(required=False, allow_blank=True)
     folder = serializers.PrimaryKeyRelatedField(queryset=Folder.objects.all(), required=False)
     name = serializers.CharField(required=False, allow_blank=True, allow_null=True)
     date_of_creation = serializers.CharField(required=False, allow_blank=True, allow_null=True)

@@ -7,6 +7,7 @@ import '../api_call.dart';
 import 'result_page.dart';
 import 'folder_artworks_page.dart';
 import '../core/utils.dart';
+import 'daily_art_page.dart';
 
 class InitPage extends StatefulWidget {
   @override
@@ -210,6 +211,80 @@ class _InitPageState extends State<InitPage> {
     }
   }
 
+  Future<String> getQuery() async {
+    int timeStamp = (DateTime.now().millisecondsSinceEpoch / 1000).floor();
+    
+    Map<String, dynamic> artworkRequest = {
+      "resources": "artworks",
+      "fields": [
+        "id",
+        "title",
+        "artist_title",
+        "image_id",
+        "date_display",
+        "thumbnail"
+      ],
+      "boost": false,
+      "limit": 1,
+      "query": {
+        "function_score": {
+          "query": {
+            "bool": {
+              "must": [
+                {
+                  "term": {
+                    "is_public_domain": true
+                  },
+                },
+                {
+                  "exists": {
+                    "field": "image_id",
+                  },
+                },
+              ],
+            },
+          },
+          "boost_mode": "replace",
+          "random_score": {
+            "field": "id",
+            "seed": timeStamp
+          }
+        }
+      }
+    };
+
+    return json.encode(artworkRequest);
+  }
+
+  Future<void> _generateArtwork() async {
+    try {
+      String query = await getQuery();
+      String id = DateTime.now().millisecondsSinceEpoch.toString();
+
+      final generateArtworkCall = GenerateArtworkCall();
+      final response = await generateArtworkCall.call(query: query, id: id);
+
+      if (response.statusCode == 200) {
+        final artworkData = json.decode(response.bodyText);
+        print(artworkData);
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => DailyArtPage(artwork: artworkData),
+          ),
+        );
+      } else {
+        throw Exception('Failed to generate artwork: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error generating artwork: $e');
+      // Show an error message to the user
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to generate artwork. Please try again.')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -350,20 +425,39 @@ class _InitPageState extends State<InitPage> {
                       ),
                     Container(
                       alignment: Alignment.bottomCenter,
-                      height: 480,
-                      child: ElevatedButton(
-                        onPressed: _pickImageAndUploadPath,
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: AppTheme.tertiaryColor,
-                          shape: CircleBorder(),
-                          padding: EdgeInsets.all(12),
-                        ),
-                        child: Icon(
-                          Icons.file_upload,
-                          size: 48,
-                          color: AppTheme.secondaryColor,
-                        ),
-                    ),
+                      height: 120, 
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ElevatedButton(
+                            onPressed: _pickImageAndUploadPath,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.tertiaryColor,
+                              shape: CircleBorder(),
+                              padding: EdgeInsets.all(12),
+                            ),
+                            child: Icon(
+                              Icons.file_upload,
+                              size: 48,
+                              color: AppTheme.secondaryColor,
+                            ),
+                          ),
+                          SizedBox(width: 20), // Add some space between the buttons
+                          ElevatedButton(
+                            onPressed: _generateArtwork,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppTheme.tertiaryColor,
+                              shape: CircleBorder(),
+                              padding: EdgeInsets.all(12),
+                            ),
+                            child: Icon(
+                              Icons.palette,
+                              size: 48,
+                              color: AppTheme.secondaryColor,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                     SizedBox(height: 20),
                   ],

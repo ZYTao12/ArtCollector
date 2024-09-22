@@ -1,7 +1,6 @@
 //import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'api_manager.dart';
-
 export 'api_manager.dart' show ApiCallResponse;
 
 class APIServerGroup {
@@ -15,7 +14,7 @@ class APIServerGroup {
 class CreateArtworkCall {
   Future<ApiCallResponse> call({
     required String label_path,
-    String? folder = '1',
+    String? folder = '',
     String? name = '',
     String? date_of_creation = '',
     String? medium = '',
@@ -170,6 +169,26 @@ class GetFolderArtworksCall {
       encodeBodyUtf8: false,
       decodeUtf8: false,
       cache: false,
+    );
+  }
+}
+
+class GenerateArtworkCall {
+  Future<ApiCallResponse> call({
+    required String query,
+    required String id,
+  }) async {
+    return ApiManager.instance.makeApiCall(
+      callName: 'generateArtwork',
+      apiUrl: 'https://api.artic.edu/api/v1/search',
+      callType: ApiCallType.POST,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      params: {},
+      body: query,
+      bodyType: BodyType.JSON,
+      returnBody: true,
     );
   }
 }

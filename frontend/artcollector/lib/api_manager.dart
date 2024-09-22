@@ -86,7 +86,7 @@ class ApiCallOptions extends Equatable {
 
   static Map<String, dynamic> _cloneMap(Map<String, dynamic> map) {
     try {
-      return json.decode(json.encode(map)) as Map<String, dynamic>;
+      return json.encode(map) as Map<String, dynamic>;
     } catch (_) {
       return Map.from(map);
     }
