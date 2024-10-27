@@ -18,8 +18,8 @@ def client():
     #api_key = config.get('DEFAULT', 'api_key')
     #endpoint = config.get('DEFAULT', 'endpoint')
 
-    #client = DocumentAnalysisClient(endpoint=endpoint, credential=AzureKeyCredential(api_key))
-    client = DocumentAnalysisClient(endpoint='https://doc-ai-0802-testing.cognitiveservices.azure.com/', credential=AzureKeyCredential('0a17e85f04ef41b78b252cea1a002aaa'))
+    client = DocumentAnalysisClient(endpoint=endpoint, credential=AzureKeyCredential(api_key))
+    
     return client
 
 def analyze_label(formUrl, artwork_uid):
